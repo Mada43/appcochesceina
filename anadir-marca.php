@@ -1,21 +1,25 @@
 <?php
-$page_title = "Añadir Marca";
-
 include "./templates/header.php";
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
-
+$page_title = "Añadir Modelo";
+?>
+<?php
 //creating the necessary objects
 //instantiating the class that builds the form
 $FormularioCeina = new CeinaForms();
 //instantiating the class that manages the db
-$enviarOficina = new DBforms();
+$enviarCoche = new DBforms();
 
 // COMPRUEBO SI ESTAMOS EN METODO POST.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    if ($_FILES[key($_FILES)]['size'] === 0) { 
-        $FormularioCeina->enviarFormulario($_POST); 
+    if (!isset($_FILES)) { 
+        //if ($_FILES[key($_FILES)]['size'] === 0)
+        {
+            $FormularioCeina->enviarFormulario($_POST);
+        }
+         
     } else { 
         $FormularioCeina->enviarFormulario($_POST, $_FILES); }
 
@@ -32,88 +36,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "POST" ? true : false;
 ?>
 <div class="caja-contenedora">
-    <h3 style="margin-top: 0px;">Añadir Marca</h3>
+    <!-- <h3 style="margin-top: 30px;">Añadir Oficina</h3> -->
+    <!-- OR the title can be stored in a php var and echoed here as follows: -->	
+    <h3 style="margin-top: 30px;"><?php echo $page_title ?></h3> 
     <hr> 
     
     <form
         action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"
-        method="post" enctype="multipart/form-data"
+        method="post"
     >
     <!-- generating the inputs -->
     <?php
-    
-        //text input for name
-        $FormularioCeina->showInput(
-            $type = "text",
-            $id = "nombre",
-            $name = "nombre",
-            $placeholder = "Nombre Oficina",
-            $label = "Nombre Oficina",
-            $validacion = $existeValidacion
-        );
 
-        //text input for address
-        $FormularioCeina->showInput(
-            $type = "text",
-            $id = "direccion",
-            $name = "direccion",
-            $placeholder = "Introduzca la direccion",
-            $label = "Dirección",
-            $validacion = $existeValidacion
-        );
-
-        //text input for number
-        $FormularioCeina->showInput(
-            $type = "number",
-            $id = "nr-puestos",
-            $name = "nr-puestos",
-            $placeholder = "Introduzca el numero de puestos",
-            $label = "Numero de Puestos",
-            $validacion = $existeValidacion
-        );
-
-        //checkbox input
-        $FormularioCeina->showInput(
-            $type = "checkbox",
-            $id = "ascensor",
-            $name = "ascensor",
-            $placeholder = "",
-            $label = "Tiene Ascensor",
-            $validacion = $existeValidacion
-        );
-
-        //checkbox input
-        $FormularioCeina->showInput(
-            $type = "checkbox",
-            $id = "discap",
-            $name = "discap",
-            $placeholder = "",
-            $label = "Tiene Acceso para Discapacitados",
-            $validacion = $existeValidacion
-        );
-
-        echo '<hr>';
-        
-        echo '<hr>';
-        //multiple select input for EMPLOYEES
+        //select input for Marcas
         $FormularioCeina->showInput(
             $type = "select",
-            $id = "trabajadores",
-            $name = "trabajadores[]",
+            $id = "marca",
+            $name = "marca",
             $placeholder = "",
-            $label = "Trabajadores",
+            $label = "Elige una marca",
             $validacion = $existeValidacion,
-            $options = $enviarOficina->obtenerTrabajadores(),
-            $multiple = true
+            $options = $enviarCoche->obtenerMarcas(),
+            //$multiple = true
         );
+        ?>
 
-        //file upload input
+        <!-- <p>Introduce una marca nueva</p> -->
+
+    <!-- <label for="myCheck">Introducir una marca nueva</label> 
+    <input type="checkbox" id="myCheck" style="display:inline" onclick="displayInput()"> -->
+    
+    <?php
+        //text input
+        // $FormularioCeina->showInput(
+        //     $type = "text",
+        //     $id = "marca-nueva",
+        //     $name = "marca-nueva",
+        //     $placeholder = "Marca",
+        //     $label = "",
+        //     $validacion = $existeValidacion
+        // );
+
+        //text input
         $FormularioCeina->showInput(
-            $type = "file",
-            $id = "foto",
-            $name = "foto",
-            $placeholder = "Archivo",
-            $label = "Select photo to upload ",
+            $type = "text",
+            $id = "modelo",
+            $name = "modelo",
+            $placeholder = "Modelo",
+            $label = "Introduzca el modelo",
             $validacion = $existeValidacion
         );
 
@@ -124,68 +94,62 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     </form>
 </div>
 <?php
-    $errores = $FormularioCeina->hayErrores();
+var_dump($_POST);
+if(isset($_POST["submit"])){
+    echo $_POST['marca'];
+    //echo $_POST['marca-nueva'];
+    echo $_POST['modelo'];   
+}
+$errores = $FormularioCeina->hayErrores();
+if (!$errores && $existeValidacion){
 
-    //if there are no errors + 
-    //method is POST and the class that builds and validates the form exists
-    if (!$errores && $existeValidacion) {
-        //we can now build the path where the file will be uploaded
-        $filePath = '/tmp/' . $FormularioCeina->fotoRecibida['name'];
-        //insert data into MEDIA tbl and keep the inserted id
-        $idMedia = $enviarOficina->enviarMedia(
-            'ssi',
-            '/tmp/' . $FormularioCeina->fotoRecibida['name'],
-            "",
-            0
-            //$FormularioCeina->fotoRecibida['mime_type'],
-            //$FormularioCeina->fotoRecibida['filesize']
+        //insert data into ciudades and keep the id
+        // $idCiudad = $enviarCoche->enviarCiudad(
+        //     'ss',
+        //     $FormularioCeina->datosRecibidos['ciudad'],
+        //     $FormularioCeina->datosRecibidos['pais']
+        // );
+
+        // $idMarca = $enviarCoche->enviarMarca(
+        //     's',
+        //     $_POST['marca']
+        // );
+
+        $idMarca = $_POST['marca'];
+
+        $idModelo = $enviarCoche->enviarModelo(
+            'si',
+            $_POST['modelo'],
+            $idMarca
         );
 
-        $ascensor = array_key_exists('ascensor', $FormularioCeina->datosRecibidos)? 1 : 0;
-        $discap = array_key_exists('discap', $FormularioCeina->datosRecibidos)? 1 : 0;
-        // Enviar a la base de datos y guarda el id
-        //echo "Checkboxes are sent as: ";
-        //var_dump($FormularioCeina->datosRecibidos['ascensor']);
-        //var_dump($FormularioCeina->datosRecibidos['discap']);
-
-        //insert data into OFICINA and keep the id
-        $idOficina = $enviarOficina->enviarOficina(
-            'ssiiis',
-            $FormularioCeina->datosRecibidos['nombre'],
-            $FormularioCeina->datosRecibidos['direccion'],
-            $FormularioCeina->datosRecibidos['nr-puestos'],
-            //$FormularioCeina->datosRecibidos['ascensor'],
-            //$FormularioCeina->datosRecibidos['discap'],
-            $ascensor,
-            $discap,
-            $idMedia
-            //$FormularioCeina->datosRecibidos['foto'] //we should have the id here?
-        );
-
-        //if (!empty($idOficina)) {
-        //    echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
-        //}
-
-        //get data from multiple select and 
-        if ($FormularioCeina->datosRecibidos['trabajadores']) {
-            foreach ($FormularioCeina->datosRecibidos['trabajadores'] as $key => $value) {
-                //...pass it to the fct that inserts it into the DB
-                $enviarOficina->enviarOficinaTrabajador(
-                    'ii',
-                    $idOficina,
-                    $value
-                );
-            }
+        if (!empty($idMarca)) {
+            echo "La marca elegida es " . $_POST['marca'] . PHP_EOL;
+            //echo $_POST['marca-nueva'];
+            echo "El modelo introducido es " . $_POST['modelo'];
+            echo '<p>Gracias, hemos recibido y guardado los datos</p>';
         }
 
-      $sqlResult = $enviarOficina->enviarOficinaMedia('ii', $idOficina, $idMedia);
-      echo $sqlResult;
-     // var_dump($enviarOficina);
+        //var_dump($idCiudad);
 
-        
+        //get data from multiple select and 
+        // if ($FormularioCeina->datosRecibidos['trabajadores']) {
+        //     foreach ($FormularioCeina->datosRecibidos['trabajadores'] as $key => $value) {
+        //         //...pass it to the fct that inserts it into the DB
+        //         $enviarOficina->enviarOficinaTrabajador(
+        //             'ii',
+        //             $idOficina,
+        //             $value
+        //         );
+        //     }
+        // }
+
+    //   $sqlResult = $enviarOficina->enviar('ii', $idOficina, $idMedia);
+    //   echo $sqlResult;
     }
-?>
-<?php include "./templates/footer.php";
+       
+
+include "./templates/footer.php";
 
 
 /*
@@ -198,4 +162,20 @@ LOS PAREMTROS. SELECT * FROM .....
 1. FUNCIONA BIEN CON TODO TIPO DE DECLARACIONES SQL
 2. USA fetch_assoc()
 */
+?>
+<script>
+    window.onload = function(){
+    document.getElementById("marca-nueva").style.display='none';
+};
+    function displayInput() {
+    var checkBox = document.getElementById("myCheck");
+    var textInput = document.getElementById("marca-nueva");
+    if (checkBox.checked == true){
+        textInput.style.display = "block";
+    } else {
+        textInput.style.display = "none";
+    }
+    }
+</script>
 
+<script src="./assets/js/custom.js"></script>

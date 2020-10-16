@@ -1,15 +1,17 @@
 <?php
-$page_title = "Añadir Marca";
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include "./templates/header.php";
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
+
+$page_title = "Añadir Coche";
 
 //creating the necessary objects
 //instantiating the class that builds the form
 $FormularioCeina = new CeinaForms();
 //instantiating the class that manages the db
-$enviarOficina = new DBforms();
+$enviarCoche = new DBforms();
 
 // COMPRUEBO SI ESTAMOS EN METODO POST.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -26,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     print_r($_FILES);
     echo '</pre>';
     $FormularioCeina->enviarFormulario($_POST, $_FILES);
+    var_dump($FormularioCeina->datosRecibidos);
 }
 
 // COMPRUEBO SI ESTAMOS EN METODO POST Y LA CLASE EXISTE
@@ -39,73 +42,112 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"
         method="post" enctype="multipart/form-data"
     >
-    <!-- generating the inputs -->
+    <!-- generating the form inputs -->
     <?php
     
-        //text input for name
-        $FormularioCeina->showInput(
-            $type = "text",
-            $id = "nombre",
-            $name = "nombre",
-            $placeholder = "Nombre Oficina",
-            $label = "Nombre Oficina",
-            $validacion = $existeValidacion
-        );
+    //select input - Marca
+    // $FormularioCeina->showInput(
+    //     $type = "select",
+    //     $id = "marca",
+    //     $name = "marca",
+    //     $placeholder = "",
+    //     $label = "Marca",
+    //     $validacion = $existeValidacion,
+    //     $options = $enviarCoche->obtenerMarcas(),
+    //     //$multiple = true
+    // );
+    
+    //select input - Modelo
+    $FormularioCeina->showInput(
+        $type = "select",
+        $id = "modelo",
+        $name = "modelo",
+        $placeholder = "",
+        $label = "Modelo",
+        $validacion = $existeValidacion,
+        $options = $enviarCoche->obtenerModelos(),
+        //$multiple = true
+    ); 
+    
+    //text input -año fabricación
+    $FormularioCeina->showInput(
+        $type = "number",
+        $id = "anio_produccion",
+        $name = "anio_produccion",
+        $placeholder = "Introduzca el año de fabricación",
+        $label = "Año fabricación",
+        $validacion = $existeValidacion
+    );
 
-        //text input for address
-        $FormularioCeina->showInput(
-            $type = "text",
-            $id = "direccion",
-            $name = "direccion",
-            $placeholder = "Introduzca la direccion",
-            $label = "Dirección",
-            $validacion = $existeValidacion
-        );
+    //select input - combustible
+    $FormularioCeina->showInput(
+        $type = "select",
+        $id = "combustible",
+        $name = "combustible",
+        $placeholder = "",
+        $label = "Combustible",
+        $validacion = $existeValidacion,
+        $options = $enviarCoche->obtenerCombustible(),
+        //$multiple = true
+    );
 
-        //text input for number
-        $FormularioCeina->showInput(
-            $type = "number",
-            $id = "nr-puestos",
-            $name = "nr-puestos",
-            $placeholder = "Introduzca el numero de puestos",
-            $label = "Numero de Puestos",
-            $validacion = $existeValidacion
-        );
+    //text input - precio
+    $FormularioCeina->showInput(
+        $type = "number",
+        $id = "precio",
+        $name = "precio",
+        $placeholder = "Introduzca el precio",
+        $label = "Precio",
+        $validacion = $existeValidacion
+    );
+
+    //select input - vendedor
+    $FormularioCeina->showInput(
+        $type = "select",
+        $id = "vendedor",
+        $name = "vendedor",
+        $placeholder = "",
+        $label = "Propietario",
+        $validacion = $existeValidacion,
+        $options = $enviarCoche->obtenerVendedores(),
+        //$multiple = true
+    ); 
+
+    //select input - comprador
+    $FormularioCeina->showInput(
+        $type = "select",
+        $id = "comprador",
+        $name = "comprador",
+        $placeholder = "",
+        $label = "Comprador",
+        $validacion = $existeValidacion,
+        $options = $enviarCoche->obtenerCompradores(),
+        //$multiple = true
+    ); 
 
         //checkbox input
-        $FormularioCeina->showInput(
-            $type = "checkbox",
-            $id = "ascensor",
-            $name = "ascensor",
-            $placeholder = "",
-            $label = "Tiene Ascensor",
-            $validacion = $existeValidacion
-        );
-
-        //checkbox input
-        $FormularioCeina->showInput(
-            $type = "checkbox",
-            $id = "discap",
-            $name = "discap",
-            $placeholder = "",
-            $label = "Tiene Acceso para Discapacitados",
-            $validacion = $existeValidacion
-        );
+        // $FormularioCeina->showInput(
+        //     $type = "checkbox",
+        //     $id = "ascensor",
+        //     $name = "ascensor",
+        //     $placeholder = "",
+        //     $label = "Tiene Ascensor",
+        //     $validacion = $existeValidacion
+        // );
 
         echo '<hr>';
-        
-        echo '<hr>';
-        //multiple select input for EMPLOYEES
-        $FormularioCeina->showInput(
-            $type = "select",
-            $id = "trabajadores",
-            $name = "trabajadores[]",
-            $placeholder = "",
-            $label = "Trabajadores",
-            $validacion = $existeValidacion,
-            $options = $enviarOficina->obtenerTrabajadores(),
-            $multiple = true
-        );
+    
+        // //multiple select input for EMPLOYEES
+        // $FormularioCeina->showInput(
+        //     $type = "select",
+        //     $id = "trabajadores",
+        //     $name = "trabajadores[]",
+        //     $placeholder = "",
+        //     $label = "Trabajadores",
+        //     $validacion = $existeValidacion,
+        //     $options = $enviarOficina->obtenerTrabajadores(),
+        //     $multiple = true
+        // );
 
         //file upload input
         $FormularioCeina->showInput(
@@ -132,7 +174,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //we can now build the path where the file will be uploaded
         $filePath = '/tmp/' . $FormularioCeina->fotoRecibida['name'];
         //insert data into MEDIA tbl and keep the inserted id
-        $idMedia = $enviarOficina->enviarMedia(
+        $idMedia = $enviarCoche->enviarMedia(
             'ssi',
             '/tmp/' . $FormularioCeina->fotoRecibida['name'],
             "",
@@ -141,44 +183,51 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             //$FormularioCeina->fotoRecibida['filesize']
         );
 
-        $ascensor = array_key_exists('ascensor', $FormularioCeina->datosRecibidos)? 1 : 0;
-        $discap = array_key_exists('discap', $FormularioCeina->datosRecibidos)? 1 : 0;
+        //$ascensor = array_key_exists('ascensor', $FormularioCeina->datosRecibidos)? 1 : 0;
+        //$discap = array_key_exists('discap', $FormularioCeina->datosRecibidos)? 1 : 0;
         // Enviar a la base de datos y guarda el id
         //echo "Checkboxes are sent as: ";
         //var_dump($FormularioCeina->datosRecibidos['ascensor']);
         //var_dump($FormularioCeina->datosRecibidos['discap']);
 
-        //insert data into OFICINA and keep the id
-        $idOficina = $enviarOficina->enviarOficina(
-            'ssiiis',
-            $FormularioCeina->datosRecibidos['nombre'],
-            $FormularioCeina->datosRecibidos['direccion'],
-            $FormularioCeina->datosRecibidos['nr-puestos'],
-            //$FormularioCeina->datosRecibidos['ascensor'],
-            //$FormularioCeina->datosRecibidos['discap'],
-            $ascensor,
-            $discap,
-            $idMedia
-            //$FormularioCeina->datosRecibidos['foto'] //we should have the id here?
+        //insert data into COCHES and keep the id
+        $produced = intval($FormularioCeina->datosRecibidos['anio_produccion']);
+        $price = intval($FormularioCeina->datosRecibidos['precio']);
+        $seller = intval($FormularioCeina->datosRecibidos['vendedor']);
+        $buyer = intval($FormularioCeina->datosRecibidos['comprador']);
+        $fuel = intval($FormularioCeina->datosRecibidos['combustible']);
+        $model = intval($FormularioCeina->datosRecibidos['modelo']);
+
+        $idCoche = $enviarCoche->enviarCoche2(
+            $produced,
+            $price,
+            $seller,
+            $buyer,
+            $fuel,
+            $model
         );
+
+        var_dump($FormularioCeina->datosRecibidos);
 
         //if (!empty($idOficina)) {
         //    echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
         //}
 
         //get data from multiple select and 
-        if ($FormularioCeina->datosRecibidos['trabajadores']) {
-            foreach ($FormularioCeina->datosRecibidos['trabajadores'] as $key => $value) {
-                //...pass it to the fct that inserts it into the DB
-                $enviarOficina->enviarOficinaTrabajador(
-                    'ii',
-                    $idOficina,
-                    $value
-                );
-            }
-        }
+        // if ($FormularioCeina->datosRecibidos['trabajadores']) {
+        //     foreach ($FormularioCeina->datosRecibidos['trabajadores'] as $key => $value) {
+        //         //...pass it to the fct that inserts it into the DB
+        //         $enviarOficina->enviarOficinaTrabajador(
+        //             'ii',
+        //             $idOficina,
+        //             $value
+        //         );
+        //     }
+        // }
 
-      $sqlResult = $enviarOficina->enviarOficinaMedia('ii', $idOficina, $idMedia);
+        
+
+      $sqlResult = $enviarCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
       echo $sqlResult;
      // var_dump($enviarOficina);
 

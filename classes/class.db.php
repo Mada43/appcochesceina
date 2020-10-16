@@ -290,7 +290,7 @@ class DBforms {
     {
         $miConexion = $this->crearConexion();
         $enviarMarca = $miConexion->prepare(
-            "INSERT INTO marca (
+            "INSERT INTO marcas (
                 marca) 
             VALUES (?)");
         
@@ -370,40 +370,35 @@ class DBforms {
     //insert data into the db and keep/return the last inserted id 
     public function enviarCoche(
         $datos, 
-        $marca, 
-        $modelo, 
-        $combustible, 
+        $fabricacion, 
         $precio, 
-        $vendedores_id, 
-        $compradores_id,
-        $combustible_id,
-        $modelos_id
+        $id_vendedor, 
+        $id_comprador, 
+        $id_combustible, 
+        $id_modelo
         )
     {
         $miConexion = $this->crearConexion();
         $enviarCoche = $miConexion->prepare(
             "INSERT INTO coches (
-                marca, 
-                modelo, 
-                combustible, 
+                anio_produccion, 
                 precio, 
-                vendedores_id,
-                compradores_id,
+                vendedores_id, 
+                compradores_id, 
                 combustible_id,
-                modelos_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                modelos_id,
+               ) 
+        VALUES (?, ?, ?, ?, ?, ?)");
         
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarCoche->bind_param(
             $datos,
-            $marca,
-            $modelo, 
-            $combustible, 
+            $fabricacion,
             $precio, 
-            $vendedores_id, 
-            $compradores_id,
-            $combustible_id,
-            $modelos_id
+            $id_vendedor, 
+            $id_comprador, 
+            $id_combustible, 
+            $id_modelo
         );
 
         // Compruebo si la conexión se establece bien
@@ -431,28 +426,75 @@ class DBforms {
     }
 
     //insert data into the db and keep/return the last inserted id 
+    public function enviarCoche2( 
+        $fabricacion, 
+        $precio, 
+        $id_vendedor, 
+        $id_comprador, 
+        $id_combustible, 
+        $id_modelo
+        )
+    {
+        $conn = $this->crearConexion();
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        } 
+        $sql = "INSERT INTO coches (
+                anio_produccion, 
+                precio, 
+                vendedores_id, 
+                compradores_id, 
+                combustible_id,
+                modelos_id
+               ) 
+        VALUES ($fabricacion, 
+                $precio, 
+                $id_vendedor, 
+                $id_comprador, 
+                $id_combustible, 
+                $id_modelo)";
+        
+        if ($conn->query($sql) === TRUE) {
+            echo "New record created successfully";
+          } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+          }
+
+          // Devuelvo el último valor añadido
+            $id = $conn->insert_id;
+          
+          $conn->close();
+        
+
+        
+        // Devuevlo el ID
+        return $id;
+
+    }
+
+    //insert data into the db and keep/return the last inserted id 
     public function enviarMedia(
         $datos, 
         $path, 
         $mime_type = null, 
-        $file_size =null, 
-        $id_coche)
+        $file_size =null 
+        )
     {
         $miConexion = $this->crearConexion();
         $enviarMedia = $miConexion->prepare(
             "INSERT INTO MEDIA (
                 path_media, 
                 mime_type, 
-                file_size,
-                coches_id)
-            VALUES (?, ?, ?, ?)");
+                file_size
+                )
+            VALUES (?, ?, ?)");
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarMedia->bind_param(
             $datos,
             $path,
             $mime_type,
-            $file_size,
-            $id_coche
+            $file_size
         );
 
         // Compruebo si la conexión se establece bien
@@ -640,7 +682,192 @@ class DBforms {
         $miConexion->close();
 
         return $miArray;
+    }
+    
+    //get data from DB
+    public function obtenerMarcas()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, marca FROM marcas");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $marca);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $marca;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+    
+    //get data from DB - modelos
+    public function obtenerModelos()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, modelo 
+            FROM modelos
+            ");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $modelo);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $modelo;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
     }   
+
+    public function obtenerCombustible()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, gasolina, diesel, electrico, hibrido FROM combustible");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $gasolina, $diesel, $electrico, $hibrido);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            // switch ($id) {
+            //     case '1':
+            //         $miArray[$id] = "gasolina";
+            //         break;
+
+            //     case '2':
+            //         $miArray[$id] = "diesel";
+            //         break;
+                    
+            //     case '3':
+            //         $miArray[$id] = "electrico";
+            //         break;
+
+            //     case '4':
+            //         $miArray[$id] = "hibrido";
+            //         break;
+                
+            //     default:
+            //         # code...
+            //         break;
+            // }
+            $miArray[$id] = $id; //here we need only the ids, we will have a switch statement in the form
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+
+    //get data from DB
+    public function obtenerVendedores()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, nombre_vendedor, apellido_vendedor, dni FROM vendedores");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $nombre, $apellidos, $dni);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+
+    //get data from DB
+    public function obtenerCompradores()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, nombre_comprador, apellido_comprador, dni 
+            FROM compradores");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $nombre, $apellidos, $dni);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
 
 
 

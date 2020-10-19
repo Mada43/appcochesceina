@@ -53,6 +53,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "nombre",
             $name = "nombre",
+            $myFunction = "",
             $placeholder = "Nombre Vendedor",
             $label = "Introduzca el nombre del Vendedor",
             $validacion = $existeValidacion
@@ -63,6 +64,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "apellido",
             $name = "apellido",
+            $myFunction = "",
             $placeholder = "Apellido Vendedor",
             $label = "Introduzca el apellido del Vendedor",
             $validacion = $existeValidacion
@@ -73,6 +75,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "number",
             $id = "dni",
             $name = "dni",
+            $myFunction = "",
             $placeholder = "Introduzca el DNI del vendedor",
             $label = "DNI vendedor",
             $validacion = $existeValidacion
@@ -83,6 +86,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "direccion",
             $name = "direccion",
+            $myFunction = "",
             $placeholder = "Introduzca la direccion",
             $label = "Dirección",
             $validacion = $existeValidacion
@@ -93,6 +97,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "codigo-postal",
             $name = "codigo-postal",
+            $myFunction = "",
             $placeholder = "Introduzca el codigo postal",
             $label = "Codigo Postal",
             $validacion = $existeValidacion

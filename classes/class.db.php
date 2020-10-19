@@ -743,6 +743,47 @@ class DBforms {
         $miConexion->close();
 
         return $miArray;
+    }
+    
+    //get data from DB - modelos
+    public function obtenerModelos2()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, modelo 
+            FROM modelos
+            WHERE marcas_id = ?");
+        
+        //
+        $prepare->bind_param("s", $_GET['q']);
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        //
+        $prepare->store_result();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $modelo);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $modelo;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
     }   
 
     public function obtenerCombustible()

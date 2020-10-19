@@ -23,7 +23,8 @@
 <div id="navmenu">
 	<ul>
 		<li><a href="index.php">HOME</a></li>
-		<li><a href="anadir-marca.php">AÑADIR MODELO</a></li>
+        <li><a href="mostrar-coches.php">VISTA COCHES</a></li>
+        <li><a href="anadir-modelo.php">AÑADIR MODELO</a></li>
         <li><a href="anadir-vendedor.php">AÑADIR VENDEDOR</a></li>
         <li><a href="anadir-coche.php">AÑADIR COCHE</a></li>
         <li><a href="anadir-comprador.php">AÑADIR COMPRADOR</a></li>

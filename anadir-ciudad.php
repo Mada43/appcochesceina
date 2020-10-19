@@ -53,6 +53,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "ciudad",
             $name = "ciudad",
+            $myFunction = "",
             $placeholder = "Nombre Ciudad",
             $label = "Introduzca el ciudad",
             $validacion = $existeValidacion
@@ -63,6 +64,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "text",
             $id = "pais",
             $name = "pais",
+            $myFunction = "",
             $placeholder = "Nombre pais",
             $label = "Introduzca el pais",
             $validacion = $existeValidacion

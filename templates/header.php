@@ -1,3 +1,4 @@
+<?php $page_title = "Coches App"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,10 @@
     <title>
         <?php echo $page_title; ?>
     </title>
+
+    <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head> 
 </head>
 <body>
 

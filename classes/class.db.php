@@ -13,7 +13,7 @@ class DBforms {
         $servername = 'localhost',
         $username = 'root',
         $password = '',
-        $myDB = 'bd_coches'
+        $myDB = 'bd_coches_v2'
     ) {
         $this->servername = $servername;
         $this->username = $username;
@@ -528,7 +528,7 @@ class DBforms {
     {
         $msg = "Expecting result...";
         $miConexion = $this->crearConexion();
-        $enviarCocheMedia = $miConexion->prepare("INSERT INTO coches_has_media (coches_id, media_id) VALUES (?, ?)");
+        $enviarCocheMedia = $miConexion->prepare("INSERT INTO coches_media (coches_id, media_id) VALUES (?, ?)");
         $enviarCocheMedia->bind_param(
             $datos,
             $idCoche,
@@ -547,7 +547,7 @@ class DBforms {
         if (!$enviarCocheMedia) {
             throw new Exception($miConexion->error_list);
         } else {
-            $msg = "Successfully inserted data into coches_has_media";
+            $msg = "Successfully inserted data into coches_media";
         }
 
         // Devuelvo el último valor añadido para el id (autoincremented primary key)
@@ -605,26 +605,20 @@ class DBforms {
     public function enviarCochesTransacciones(
         $datos, 
         $id_coche,
-        $id_vendedor,
-        $id_comprador,
         $id_transaccion
         )
     {
         $miConexion = $this->crearConexion();
         $enviarCochesTransacciones = $miConexion->prepare(
-            "INSERT INTO coches_has_transacciones (
+            "INSERT INTO coches_transacciones (
                 coches_id,
-                coches_vendedores_id,
-                coches_compradores_id,
                 transacciones_id) 
-            VALUES (?, ?, ?, ?)");
+            VALUES (?, ?)");
         
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarCochesTransacciones->bind_param(
             $datos,
             $id_coche,
-            $id_vendedor,
-            $id_comprador,
             $id_transaccion
         );
 

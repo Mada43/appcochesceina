@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "POST" ? true : false;
 ?>
 <div class="caja-contenedora">
-    <h3 style="margin-top: 0px;">Añadir Marca</h3>
+    <h3 style="margin-top: 0px;"><?php echo $page_title ?></h3>
     <hr> 
     
     <form

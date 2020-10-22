@@ -25,6 +25,16 @@ class CeinaForms {
         $this->fichero_subido = null;
     }
 
+    //fct to display variable content
+    public function displayVar($varToDisplay){
+        echo '<pre>';
+        print_r($varToDisplay);
+        echo '</pre>';
+        //echo '<pre>';
+        //print_r($_FILES);
+        //echo '</pre>';
+    }
+
     public function enviarFormulario($datos, $files = null)
     {
         $this->datosRecibidos = $datos;
@@ -469,4 +479,6 @@ class CeinaForms {
             echo "GUARDAMEEEEE";
         }
     }
+
+    
 }

@@ -11,7 +11,7 @@ $page_title = "Añadir Coche";
 //instantiating the class that builds the form
 $FormularioCeina = new CeinaForms();
 //instantiating the class that manages the db
-$enviarCoche = new DBforms();
+$objectCoche = new DBforms();
 
 // COMPRUEBO SI ESTAMOS EN METODO POST.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -21,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else { 
         $FormularioCeina->enviarFormulario($_POST, $_FILES); }
 
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    echo '<pre>';
-    print_r($_FILES);
-    echo '</pre>';
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // echo '<pre>';
+    // print_r($_FILES);
+    // echo '</pre>';
     $FormularioCeina->enviarFormulario($_POST, $_FILES);
-    var_dump($FormularioCeina->datosRecibidos);
+    //var_dump($FormularioCeina->datosRecibidos);
 }
 
 // COMPRUEBO SI ESTAMOS EN METODO POST Y LA CLASE EXISTE
@@ -53,7 +53,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     //     $placeholder = "",
     //     $label = "Marca",
     //     $validacion = $existeValidacion,
-    //     $options = $enviarCoche->obtenerMarcas(),
+    //     $options = $objectCoche->obtenerMarcas(),
     //     //$multiple = true
     // );
     
@@ -66,7 +66,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $placeholder = "",
         $label = "Modelo",
         $validacion = $existeValidacion,
-        $options = $enviarCoche->obtenerModelos(),
+        $options = $objectCoche->obtenerModelos(),
         //$multiple = true
     ); 
     
@@ -90,7 +90,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $placeholder = "",
         $label = "Combustible",
         $validacion = $existeValidacion,
-        $options = $enviarCoche->obtenerCombustible(),
+        $options = $objectCoche->obtenerCombustible(),
         //$multiple = true
     );
 
@@ -114,22 +114,22 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $placeholder = "",
         $label = "Propietario",
         $validacion = $existeValidacion,
-        $options = $enviarCoche->obtenerVendedores(),
+        $options = $objectCoche->obtenerVendedores(),
         //$multiple = true
     ); 
 
     //select input - comprador
-    $FormularioCeina->showInput(
-        $type = "select",
-        $id = "comprador",
-        $name = "comprador",
-        //$myFunction = "",
-        $placeholder = "",
-        $label = "Comprador",
-        $validacion = $existeValidacion,
-        $options = $enviarCoche->obtenerCompradores(),
+    // $FormularioCeina->showInput(
+    //     $type = "select",
+    //     $id = "comprador",
+    //     $name = "comprador",
+    //     //$myFunction = "",
+    //     $placeholder = "",
+    //     $label = "Comprador",
+    //     $validacion = $existeValidacion,
+    //     $options = $objectCoche->obtenerCompradores(),
         //$multiple = true
-    ); 
+    //); 
 
         //checkbox input
         // $FormularioCeina->showInput(
@@ -181,7 +181,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //we can now build the path where the file will be uploaded
         $filePath = '/tmp/' . $FormularioCeina->fotoRecibida['name'];
         //insert data into MEDIA tbl and keep the inserted id
-        $idMedia = $enviarCoche->enviarMedia(
+        $idMedia = $objectCoche->enviarMedia(
             'ssi',
             '/tmp/' . $FormularioCeina->fotoRecibida['name'],
             "",
@@ -201,15 +201,16 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $produced = intval($FormularioCeina->datosRecibidos['anio_produccion']);
         $price = intval($FormularioCeina->datosRecibidos['precio']);
         $seller = intval($FormularioCeina->datosRecibidos['vendedor']);
-        $buyer = intval($FormularioCeina->datosRecibidos['comprador']);
+        //$buyer = intval($FormularioCeina->datosRecibidos['comprador']);
         $fuel = intval($FormularioCeina->datosRecibidos['combustible']);
         $model = intval($FormularioCeina->datosRecibidos['modelo']);
 
-        $idCoche = $enviarCoche->enviarCoche2(
+        $idCoche = $objectCoche->enviarCoche(
+            'iiiii',
             $produced,
             $price,
             $seller,
-            $buyer,
+            //$buyer,
             $fuel,
             $model
         );
@@ -234,7 +235,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
 
         
 
-      $sqlResult = $enviarCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
+      $sqlResult = $objectCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
       echo $sqlResult;
      // var_dump($enviarOficina);
 

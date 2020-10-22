@@ -1,3 +1,4 @@
+<?php $page_title = "Coches App"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,10 @@
     <title>
         <?php echo $page_title; ?>
     </title>
+
+    <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head> 
 </head>
 <body>
 
@@ -18,8 +23,11 @@
 <div id="navmenu">
 	<ul>
 		<li><a href="index.php">HOME</a></li>
-		<li><a href="anadir-marca.php">AÑADIR MARCA</a></li>
+        <li><a href="mostrar-coches.php">VISTA COCHES</a></li>
+        <li><a href="anadir-modelo.php">AÑADIR MODELO</a></li>
         <li><a href="anadir-vendedor.php">AÑADIR VENDEDOR</a></li>
+        <li><a href="anadir-coche.php">AÑADIR COCHE</a></li>
+        <li><a href="anadir-comprador.php">AÑADIR COMPRADOR</a></li>
         <li><a href="anadir-ciudad.php">AÑADIR CIUDAD</a></li>
     </ul>
     <hr>

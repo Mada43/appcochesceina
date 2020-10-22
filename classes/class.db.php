@@ -13,7 +13,7 @@ class DBforms {
         $servername = 'localhost',
         $username = 'root',
         $password = '',
-        $myDB = 'bd_coches'
+        $myDB = 'bd_coches_v2'
     ) {
         $this->servername = $servername;
         $this->username = $username;
@@ -38,6 +38,16 @@ class DBforms {
         if ($conexion->connect_error) {
             die("La conexion ha fallado: " . $conexion->connect_error);
         }
+    }
+
+    //fct to display variable content
+    public function displayVar($varToDisplay){
+        echo '<pre>';
+        print_r($varToDisplay);
+        echo '</pre>';
+        //echo '<pre>';
+        //print_r($_FILES);
+        //echo '</pre>';
     }
 
     //insert data into the db and keep/return the last inserted id 
@@ -290,7 +300,7 @@ class DBforms {
     {
         $miConexion = $this->crearConexion();
         $enviarMarca = $miConexion->prepare(
-            "INSERT INTO marca (
+            "INSERT INTO marcas (
                 marca) 
             VALUES (?)");
         
@@ -370,40 +380,35 @@ class DBforms {
     //insert data into the db and keep/return the last inserted id 
     public function enviarCoche(
         $datos, 
-        $marca, 
-        $modelo, 
-        $combustible, 
+        $fabricacion, 
         $precio, 
-        $vendedores_id, 
-        $compradores_id,
-        $combustible_id,
-        $modelos_id
+        $id_vendedor, 
+        //$id_comprador, 
+        $id_combustible, 
+        $id_modelo
         )
     {
         $miConexion = $this->crearConexion();
         $enviarCoche = $miConexion->prepare(
-            "INSERT INTO coches (
-                marca, 
-                modelo, 
-                combustible, 
+            "INSERT INTO coches ( 
+                fecha_fabricacion,
                 precio, 
-                vendedores_id,
-                compradores_id,
+                vendedores_id, 
+                
                 combustible_id,
-                modelos_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                modelos_id
+               ) 
+        VALUES (?, ?, ?, ?, ?)");
         
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarCoche->bind_param(
             $datos,
-            $marca,
-            $modelo, 
-            $combustible, 
+            $fabricacion,
             $precio, 
-            $vendedores_id, 
-            $compradores_id,
-            $combustible_id,
-            $modelos_id
+            $id_vendedor, 
+            //$id_comprador, 
+            $id_combustible, 
+            $id_modelo
         );
 
         // Compruebo si la conexión se establece bien
@@ -431,28 +436,75 @@ class DBforms {
     }
 
     //insert data into the db and keep/return the last inserted id 
+    public function enviarCoche2( 
+        $fabricacion, 
+        $precio, 
+        $id_vendedor, 
+        $id_comprador, 
+        $id_combustible, 
+        $id_modelo
+        )
+    {
+        $conn = $this->crearConexion();
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        } 
+        $sql = "INSERT INTO coches (
+                anio_produccion, 
+                precio, 
+                vendedores_id, 
+                compradores_id, 
+                combustible_id,
+                modelos_id
+               ) 
+        VALUES ($fabricacion, 
+                $precio, 
+                $id_vendedor, 
+                $id_comprador, 
+                $id_combustible, 
+                $id_modelo)";
+        
+        if ($conn->query($sql) === TRUE) {
+            echo "New record created successfully";
+          } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+          }
+
+          // Devuelvo el último valor añadido
+            $id = $conn->insert_id;
+          
+          $conn->close();
+        
+
+        
+        // Devuevlo el ID
+        return $id;
+
+    }
+
+    //insert data into the db and keep/return the last inserted id 
     public function enviarMedia(
         $datos, 
         $path, 
         $mime_type = null, 
-        $file_size =null, 
-        $id_coche)
+        $file_size =null 
+        )
     {
         $miConexion = $this->crearConexion();
         $enviarMedia = $miConexion->prepare(
             "INSERT INTO MEDIA (
                 path_media, 
                 mime_type, 
-                file_size,
-                coches_id)
-            VALUES (?, ?, ?, ?)");
+                file_size
+                )
+            VALUES (?, ?, ?)");
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarMedia->bind_param(
             $datos,
             $path,
             $mime_type,
-            $file_size,
-            $id_coche
+            $file_size
         );
 
         // Compruebo si la conexión se establece bien
@@ -486,7 +538,7 @@ class DBforms {
     {
         $msg = "Expecting result...";
         $miConexion = $this->crearConexion();
-        $enviarCocheMedia = $miConexion->prepare("INSERT INTO coches_has_media (coches_id, media_id) VALUES (?, ?)");
+        $enviarCocheMedia = $miConexion->prepare("INSERT INTO coches_media (coches_id, media_id) VALUES (?, ?)");
         $enviarCocheMedia->bind_param(
             $datos,
             $idCoche,
@@ -505,7 +557,7 @@ class DBforms {
         if (!$enviarCocheMedia) {
             throw new Exception($miConexion->error_list);
         } else {
-            $msg = "Successfully inserted data into coches_has_media";
+            $msg = "Successfully inserted data into coches_media";
         }
 
         // Devuelvo el último valor añadido para el id (autoincremented primary key)
@@ -563,26 +615,20 @@ class DBforms {
     public function enviarCochesTransacciones(
         $datos, 
         $id_coche,
-        $id_vendedor,
-        $id_comprador,
         $id_transaccion
         )
     {
         $miConexion = $this->crearConexion();
         $enviarCochesTransacciones = $miConexion->prepare(
-            "INSERT INTO coches_has_transacciones (
+            "INSERT INTO coches_transacciones (
                 coches_id,
-                coches_vendedores_id,
-                coches_compradores_id,
                 transacciones_id) 
-            VALUES (?, ?, ?, ?)");
+            VALUES (?, ?)");
         
         //fct to bind the params - args: data types + the values to be put in the db record
         $enviarCochesTransacciones->bind_param(
             $datos,
             $id_coche,
-            $id_vendedor,
-            $id_comprador,
             $id_transaccion
         );
 
@@ -640,7 +686,405 @@ class DBforms {
         $miConexion->close();
 
         return $miArray;
+    }
+    
+    //get data from DB
+    public function obtenerMarcas()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, marca FROM marcas");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $marca);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $marca;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+    
+    //get data from DB - modelos
+    public function obtenerModelos()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, modelo 
+            FROM modelos
+            ");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $modelo);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $modelo;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+    
+    //get data from DB - modelos
+    public function obtenerModelos2()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, modelo 
+            FROM modelos
+            WHERE marcas_id = ?");
+        
+        //
+        $prepare->bind_param("s", $_GET['q']);
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        //
+        $prepare->store_result();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $modelo);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $modelo;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
     }   
+
+    public function obtenerCombustible()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, gasolina, diesel, electrico, hibrido FROM combustible");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $gasolina, $diesel, $electrico, $hibrido);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            // switch ($id) {
+            //     case '1':
+            //         $miArray[$id] = "gasolina";
+            //         break;
+
+            //     case '2':
+            //         $miArray[$id] = "diesel";
+            //         break;
+                    
+            //     case '3':
+            //         $miArray[$id] = "electrico";
+            //         break;
+
+            //     case '4':
+            //         $miArray[$id] = "hibrido";
+            //         break;
+                
+            //     default:
+            //         # code...
+            //         break;
+            // }
+            if($gasolina == 1){
+                $miArray[$id] = "gasolina";
+            }
+            else if($diesel == 1){
+                $miArray[$id] = "diesel";
+            }
+            else if($electrico == 1){
+                $miArray[$id] = "electrico";
+            }
+            else//($electrico = 1)
+            {
+                $miArray[$id] = "hibrido";
+            }
+            //$miArray[$id] = $id . $gasolina . $diesel . $electrico . $hibrido; //here we need only the ids, we will have a switch statement in the form??
+            
+        }
+
+        //$columns = array_keys($miArray[1]);//here it is an INT, not an array!!
+
+        echo '<pre>';
+        print_r($miArray);
+        //print_r($columns);
+        echo '</pre>';
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        
+
+        return $miArray;
+    }
+
+    //get data from DB
+    public function obtenerVendedores()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare("SELECT id, nombre_vendedor, apellido_vendedor, dni FROM vendedores");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $nombre, $apellidos, $dni);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+
+    //get data from DB
+    public function obtenerCompradores()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY
+        $prepare = $miConexion->prepare(
+            "SELECT id, nombre_comprador, apellido_comprador, dni 
+            FROM compradores");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, $nombre, $apellidos, $dni);
+
+        // FETCH RESULT
+        $miArray = array();
+        while ($prepare->fetch()) {
+            $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+        }
+       
+        // CLOSE CONNECTION
+        $miConexion->close();
+
+        return $miArray;
+    }
+
+    //get data from DB VIEW coches_vendedores
+    public function mostrarCochesVendedores()
+    {
+        // ESTABLECER CONEXION
+        $miConexion = $this->crearConexion();
+
+        // PREPARAR QUERY - we select all columns from a VIEW created in the DB
+        $prepare = $miConexion->prepare(
+            "SELECT *
+            FROM coches_vendedores");
+
+        // COMPROBAR SI HAY ERROR
+        if (!$prepare) {
+            var_dump($miConexion->error_list);
+        }
+
+        // EJECUTAR
+        $prepare->execute();
+
+        // BIND RESULT
+        $prepare->bind_result($id, 
+                                $marca,
+                                $modelo, 
+                                $combustible, 
+                                $fecha_fabricacion, 
+                                $precio,
+                                $id_vendedor,
+                                $nombre,
+                                $apellido,
+                                $dni,
+                                $direccion,
+                                $codigo_postal,
+                                $ciudad,
+                                $pais
+                             );
+
+        // FETCH RESULT
+        // $miArray = array();
+        // while ($prepare->fetch()) { //fetch results from a prepared statement into the bound variables
+        //     $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+        // }
+       
+        $r = $prepare->get_result();
+        //$res = $prepare->fetch();
+        $fetchAllData = $r->fetch_all(MYSQLI_ASSOC);
+
+        $createTable = '<table>';
+        $createTable.='<tr>';
+        //table header
+        $createTable .= '<th>ID Coche</th>';
+        $createTable .= '<th>Marca</th>';
+        $createTable .= '<th>Modelo</th>';
+        $createTable .= '<th>Combustible</th>';
+        $createTable .= '<th>Año fabricación</th>';
+        $createTable .= '<th>Precio</th>';
+        $createTable .= '<th>ID Vendedor</th>';
+        $createTable .= '<th>Nombre Vendedor</th>';
+        $createTable .= '<th>Apellidos Vendedor</th>';
+        $createTable .= '<th>DNI</th>';
+        $createTable .= '<th>Direccion</th>';
+        $createTable .= '<th>Codigo postal</th>';
+        $createTable .= '<th>Ciudad</th>';
+        $createTable .= '<th>Pais</th>';
+        $createTable .= '</tr>';
+
+        foreach($fetchAllData as $customerData)
+        {
+	        $createTable .= '<tr>';
+	        $createTable .= '<td>'.$customerData['id'].'</td>';
+	        $createTable .= '<td>'.$customerData['marca'].'</td>';
+	        $createTable .= '<td>'.$customerData['modelo'].'</td>';
+	        $createTable .= '<td>'.$customerData['Combustible'].'</td>';
+	        $createTable .= '<td>'.$customerData['fecha_fabricacion'].'</td>';
+            $createTable .= '<td>'.$customerData['precio'].'</td>';
+            $createTable .= '<td>'.$customerData['vendedores_id'].'</td>';
+            $createTable .= '<td>'.$customerData['nombre_vendedor'].'</td>';
+            $createTable .= '<td>'.$customerData['apellido_vendedor'].'</td>';
+            $createTable .= '<td>'.$customerData['dni'].'</td>';
+            $createTable .= '<td>'.$customerData['direccion'].'</td>';
+            $createTable .= '<td>'.$customerData['codigo_postal'].'</td>';
+            $createTable .= '<td>'.$customerData['ciudad'].'</td>';
+            $createTable .= '<td>'.$customerData['pais'].'</td>';
+	        $createTable .= '</tr>';	
+        }
+ 
+$createTable .= '</table>';
+ 
+//echo $createTable;
+
+        // CLOSE CONNECTION
+        //$r->close();
+        $miConexion->close();
+            //var_dump($r); object(mysqli_result)#4 (5) 
+            //{ ["current_field"]=> int(0) ["field_count"]=> int(14) ["lengths"]=> NULL ["num_rows"]=> int(4) ["type"]=> int(0) } 
+    
+        return $createTable;
+    }
+
+
+    function show_data($fetchData){
+        echo '<table border="1">
+           <tr>
+               <th>ID Coche</th>
+               <th>Año fabricación</th>
+               <th>Precio</th>
+               <th>Modelo</th>
+               <th>Marca</th>
+               <th>Combustible</th>
+               <th>ID Vendedor</th>
+               <th>Nombre Vendedor</th>
+               <th>Apellidos Vendedor</th>
+               <th>DNI</th>
+               <th>Direccion</th>
+               <th>Codigo postal</th>
+               <th>Ciudad</th>
+               <th>Pais</th>
+               <th>Edit</th>
+               <th>Delete</th>
+           </tr>';
+        if(count($fetchData)>0){
+         //$sn=1;
+         foreach($fetchData as $data){ 
+        echo "<tr>
+                    <td>".$data['id']."</td>
+                    <td>".$data['fecha_fabricacion']."</td>
+                    <td>".$data['precio']."</td>
+                    <td>".$data['modelo']."</td>
+                    <td>".$data['marca']."</td>
+                    <td>".$data['Combustible']."</td>
+                    <td>".$data['vendedores_id']."</td>
+                    <td>".$data['nombre_vendedor']."</td>
+                    <td>".$data['apellido_vendedor']."</td>
+                    <td>".$data['dni']."</td>
+                    <td>".$data['direccion']."</td>
+                    <td>".$data['codigo_postal']."</td>
+                    <td>".$data['ciudad']."</td>
+                    <td>".$data['pais']."</td>
+            </tr>";
+          
+        //$sn++; 
+        }
+      }else{
+        
+        echo "<tr>
+           <td colspan='7'>No Data Found</td>
+          </tr>"; 
+      }
+        echo "</table>";
+   }
 
 
 

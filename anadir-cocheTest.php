@@ -11,7 +11,7 @@ $page_title = "Añadir Coche";
 //instantiating the class that builds the form
 $FormularioCeina = new CeinaForms();
 //instantiating the class that manages the db
-$objectCoche = new DBforms();
+$enviarCoche = new DBforms();
 
 // COMPRUEBO SI ESTAMOS EN METODO POST.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -21,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else { 
         $FormularioCeina->enviarFormulario($_POST, $_FILES); }
 
-    // echo '<pre>';
-    // print_r($_POST);
-    // echo '</pre>';
-    // echo '<pre>';
-    // print_r($_FILES);
-    // echo '</pre>';
+    echo '<pre>';
+    print_r($_POST);
+    echo '</pre>';
+    echo '<pre>';
+    print_r($_FILES);
+    echo '</pre>';
     $FormularioCeina->enviarFormulario($_POST, $_FILES);
-    //var_dump($FormularioCeina->datosRecibidos);
+    var_dump($FormularioCeina->datosRecibidos);
 }
 
 // COMPRUEBO SI ESTAMOS EN METODO POST Y LA CLASE EXISTE
@@ -53,7 +53,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     //     $placeholder = "",
     //     $label = "Marca",
     //     $validacion = $existeValidacion,
-    //     $options = $objectCoche->obtenerMarcas(),
+    //     $options = $enviarCoche->obtenerMarcas(),
     //     //$multiple = true
     // );
     
@@ -62,11 +62,10 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $type = "select",
         $id = "modelo",
         $name = "modelo",
-        //$myFunction = "",
         $placeholder = "",
         $label = "Modelo",
         $validacion = $existeValidacion,
-        $options = $objectCoche->obtenerModelos(),
+        $options = $enviarCoche->obtenerModelos(),
         //$multiple = true
     ); 
     
@@ -75,7 +74,6 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $type = "number",
         $id = "anio_produccion",
         $name = "anio_produccion",
-        $myFunction = "",
         $placeholder = "Introduzca el año de fabricación",
         $label = "Año fabricación",
         $validacion = $existeValidacion
@@ -86,11 +84,10 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $type = "select",
         $id = "combustible",
         $name = "combustible",
-        //$myFunction = "",
         $placeholder = "",
         $label = "Combustible",
         $validacion = $existeValidacion,
-        $options = $objectCoche->obtenerCombustible(),
+        $options = $enviarCoche->obtenerCombustible(),
         //$multiple = true
     );
 
@@ -99,7 +96,6 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $type = "number",
         $id = "precio",
         $name = "precio",
-        $myFunction = "",
         $placeholder = "Introduzca el precio",
         $label = "Precio",
         $validacion = $existeValidacion
@@ -110,26 +106,24 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $type = "select",
         $id = "vendedor",
         $name = "vendedor",
-        //$myFunction = "",
         $placeholder = "",
         $label = "Propietario",
         $validacion = $existeValidacion,
-        $options = $objectCoche->obtenerVendedores(),
+        $options = $enviarCoche->obtenerVendedores(),
         //$multiple = true
     ); 
 
     //select input - comprador
-    // $FormularioCeina->showInput(
-    //     $type = "select",
-    //     $id = "comprador",
-    //     $name = "comprador",
-    //     //$myFunction = "",
-    //     $placeholder = "",
-    //     $label = "Comprador",
-    //     $validacion = $existeValidacion,
-    //     $options = $objectCoche->obtenerCompradores(),
+    $FormularioCeina->showInput(
+        $type = "select",
+        $id = "comprador",
+        $name = "comprador",
+        $placeholder = "",
+        $label = "Comprador",
+        $validacion = $existeValidacion,
+        $options = $enviarCoche->obtenerCompradores(),
         //$multiple = true
-    //); 
+    ); 
 
         //checkbox input
         // $FormularioCeina->showInput(
@@ -160,7 +154,6 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "file",
             $id = "foto",
             $name = "foto",
-            $myFunction = "",
             $placeholder = "Archivo",
             $label = "Select photo to upload ",
             $validacion = $existeValidacion
@@ -181,7 +174,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //we can now build the path where the file will be uploaded
         $filePath = '/tmp/' . $FormularioCeina->fotoRecibida['name'];
         //insert data into MEDIA tbl and keep the inserted id
-        $idMedia = $objectCoche->enviarMedia(
+        $idMedia = $enviarCoche->enviarMedia(
             'ssi',
             '/tmp/' . $FormularioCeina->fotoRecibida['name'],
             "",
@@ -201,16 +194,15 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $produced = intval($FormularioCeina->datosRecibidos['anio_produccion']);
         $price = intval($FormularioCeina->datosRecibidos['precio']);
         $seller = intval($FormularioCeina->datosRecibidos['vendedor']);
-        //$buyer = intval($FormularioCeina->datosRecibidos['comprador']);
+        $buyer = intval($FormularioCeina->datosRecibidos['comprador']);
         $fuel = intval($FormularioCeina->datosRecibidos['combustible']);
         $model = intval($FormularioCeina->datosRecibidos['modelo']);
 
-        $idCoche = $objectCoche->enviarCoche(
-            'iiiii',
+        $idCoche = $enviarCoche->enviarCoche2(
             $produced,
             $price,
             $seller,
-            //$buyer,
+            $buyer,
             $fuel,
             $model
         );
@@ -235,7 +227,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
 
         
 
-      $sqlResult = $objectCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
+      $sqlResult = $enviarCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
       echo $sqlResult;
      // var_dump($enviarOficina);
 

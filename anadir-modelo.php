@@ -2,7 +2,7 @@
 include "./templates/header.php";
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
-$page_title = "Añadir Ciudad";
+$page_title = "Añadir Modelo";
 ?>
 <?php
 //creating the necessary objects
@@ -47,26 +47,45 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     >
     <!-- generating the inputs -->
     <?php
-    
-        //text input
+
+        //select input for Marcas
         $FormularioCeina->showInput(
-            $type = "text",
-            $id = "ciudad",
-            $name = "ciudad",
-            $myFunction = "",
-            $placeholder = "Nombre Ciudad",
-            $label = "Introduzca el ciudad",
-            $validacion = $existeValidacion
+            $type = "select",
+            $id = "marca",
+            $name = "marca",
+            //$myFunction = "",
+            $placeholder = "",
+            $label = "Elige una marca",
+            $validacion = $existeValidacion,
+            $options = $enviarCoche->obtenerMarcas(),
+            //$multiple = true
         );
+        ?>
+
+        <!-- <p>Introduce una marca nueva</p> -->
+
+    <!-- <label for="myCheck">Introducir una marca nueva</label> 
+    <input type="checkbox" id="myCheck" style="display:inline" onclick="displayInput()"> -->
+    
+    <?php
+        //text input
+        // $FormularioCeina->showInput(
+        //     $type = "text",
+        //     $id = "marca-nueva",
+        //     $name = "marca-nueva",
+        //     $placeholder = "Marca",
+        //     $label = "",
+        //     $validacion = $existeValidacion
+        // );
 
         //text input
         $FormularioCeina->showInput(
             $type = "text",
-            $id = "pais",
-            $name = "pais",
+            $id = "modelo",
+            $name = "modelo",
             $myFunction = "",
-            $placeholder = "Nombre pais",
-            $label = "Introduzca el pais",
+            $placeholder = "Modelo",
+            $label = "Introduzca el modelo",
             $validacion = $existeValidacion
         );
 
@@ -79,8 +98,9 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
 <?php
 var_dump($_POST);
 if(isset($_POST["submit"])){
-    echo $_POST['ciudad'];
-    echo $_POST['pais'];   
+    echo $_POST['marca'];
+    //echo $_POST['marca-nueva'];
+    echo $_POST['modelo'];   
 }
 $errores = $FormularioCeina->hayErrores();
 if (!$errores && $existeValidacion){
@@ -92,19 +112,27 @@ if (!$errores && $existeValidacion){
         //     $FormularioCeina->datosRecibidos['pais']
         // );
 
-        $idCiudad = $enviarCoche->enviarCiudad(
-            'ss',
-            $_POST['ciudad'],
-            $_POST['pais']
+        // $idMarca = $enviarCoche->enviarMarca(
+        //     's',
+        //     $_POST['marca']
+        // );
+
+        $idMarca = $_POST['marca'];
+
+        $idModelo = $enviarCoche->enviarModelo(
+            'si',
+            $_POST['modelo'],
+            $idMarca
         );
 
-        if (!empty($idCiudad)) {
-            echo $_POST['ciudad'];
-            echo $_POST['pais'];
-            echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
+        if (!empty($idMarca)) {
+            echo "La marca elegida es " . $_POST['marca'] . PHP_EOL;
+            //echo $_POST['marca-nueva'];
+            echo "El modelo introducido es " . $_POST['modelo'];
+            echo '<p>Gracias, hemos recibido y guardado los datos</p>';
         }
 
-        var_dump($idCiudad);
+        //var_dump($idCiudad);
 
         //get data from multiple select and 
         // if ($FormularioCeina->datosRecibidos['trabajadores']) {
@@ -137,3 +165,19 @@ LOS PAREMTROS. SELECT * FROM .....
 2. USA fetch_assoc()
 */
 ?>
+<script>
+    window.onload = function(){
+    document.getElementById("marca-nueva").style.display='none';
+};
+    function displayInput() {
+    var checkBox = document.getElementById("myCheck");
+    var textInput = document.getElementById("marca-nueva");
+    if (checkBox.checked == true){
+        textInput.style.display = "block";
+    } else {
+        textInput.style.display = "none";
+    }
+    }
+</script>
+
+<script src="./assets/js/custom.js"></script>

@@ -1,5 +1,5 @@
 <?php
-$page_title = "Añadir Vendedor";
+$page_title = "Añadir Comprador";
 
 include "./templates/header.php";
 include "./classes/class.forms.php";
@@ -54,8 +54,8 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $id = "nombre",
             $name = "nombre",
             $myFunction = "",
-            $placeholder = "Nombre Vendedor",
-            $label = "Introduzca el nombre del Vendedor",
+            $placeholder = "Nombre Comprador",
+            $label = "Introduzca el nombre del Comprador",
             $validacion = $existeValidacion
         );
 
@@ -65,8 +65,8 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $id = "apellido",
             $name = "apellido",
             $myFunction = "",
-            $placeholder = "Apellido Vendedor",
-            $label = "Introduzca el apellido del Vendedor",
+            $placeholder = "Apellido Comprador",
+            $label = "Introduzca el apellido del Comprador",
             $validacion = $existeValidacion
         );
 
@@ -76,8 +76,8 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $id = "dni",
             $name = "dni",
             $myFunction = "",
-            $placeholder = "Introduzca el DNI del vendedor",
-            $label = "DNI vendedor",
+            $placeholder = "Introduzca el DNI del comprador",
+            $label = "DNI comprador",
             $validacion = $existeValidacion
         );
 
@@ -110,6 +110,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $type = "select",
             $id = "ciudad",
             $name = "ciudad",
+            //$myFunction = "",
             $placeholder = "",
             $label = "Ciudad",
             $validacion = $existeValidacion,
@@ -194,7 +195,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //}
 
         //insert data into VENDEDORES and keep the id
-        $idVendedor = $enviarCoche->enviarVendedor(
+        $idComprador = $enviarCoche->enviarComprador(
             'sssi',
             $FormularioCeina->datosRecibidos['nombre'],
             $FormularioCeina->datosRecibidos['apellido'],
@@ -203,8 +204,8 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             //$FormularioCeina->datosRecibidos['foto'] //we should have the id here?
         );
 
-        if (!empty($idVendedor)) {
-            echo '<p>Gracias, hemos recibido y guardado los datos del vendedor</p>';
+        if (!empty($idComprador)) {
+            echo '<p>Gracias, hemos recibido y guardado los datos del comprador</p>';
         }
     }
 

@@ -25,6 +25,16 @@ class CeinaForms {
         $this->fichero_subido = null;
     }
 
+    //fct to display variable content
+    public function displayVar($varToDisplay){
+        echo '<pre>';
+        print_r($varToDisplay);
+        echo '</pre>';
+        //echo '<pre>';
+        //print_r($_FILES);
+        //echo '</pre>';
+    }
+
     public function enviarFormulario($datos, $files = null)
     {
         $this->datosRecibidos = $datos;
@@ -44,7 +54,7 @@ class CeinaForms {
     //     }
     // }
 
-    public function showInput($type, $id, $name, $placeholder, $label, $validacion, $options = null, $multiple = null)
+    public function showInput($type, $id, $name, $myFunction = "", $placeholder, $label, $validacion, $options = null, $multiple = null)
     {
         
         switch ($type) {
@@ -61,7 +71,7 @@ class CeinaForms {
                 break;
 
             case 'select':
-                return $this->getTypeSelect($type, $id, $name, $placeholder, $label, $validacion, $options, $multiple);
+                return $this->getTypeSelect($type, $id, $name, $myFunction, $placeholder, $label, $validacion, $options, $multiple);
                 break;
 
             case 'file':
@@ -214,7 +224,7 @@ class CeinaForms {
         echo $checkBox;
     }
 
-    //simple (not multiple) SELECT input
+    //simple SELECT input
     private function getTypeSelect($type, $id, $name, $placeholder, $label, $validacion, $options, $multiple = false)
     {
         $classes = "input input-select";
@@ -263,6 +273,71 @@ class CeinaForms {
         $select .= '</label>';
         //the select element
         $select .= '<select ' . ($multiple ? 'multiple' : '') . ' id="' . $id . '" name="' . $name . '" class="' . $classes . '">';
+        $select .= '<option disabled' . ($isSelected === false ? ' selected' : "") . '>-- Por favor seleccionar una opción</option>';
+        foreach ($options as $key => $value) {
+            if ($multiple) {
+                $select .= '<option value="' . $key . '"' . (in_array($key, array_values($valor_seleccionado)) ? ' selected' : "") . '>' . $value . '</option>';
+            } else {
+                $select .= '<option value="' . $key . '"' . ($valor_seleccionado === $key ? ' selected' : "") . '>' . $value . '</option>';
+            }
+        }
+        $select .= '</select>';
+        $select .= $mensaje_validacion;
+        $select .= '</div>';
+        echo $select;
+    }
+
+    //simple SELECT input
+    private function getTypeSelect2($type, $id, $name, $myFunction, $placeholder, $label, $validacion, $options, $multiple = false)
+    {
+        $classes = "input input-select";
+        $mensaje_validacion = "";
+        $isSelected = false;
+        $valor_seleccionado = "";
+
+        $myFunction = "showModel(this.value)";
+        
+        if ($multiple) {
+            $valor_seleccionado = array();
+        }
+
+        if ($validacion && in_array($name, array_keys($this->datosRecibidos))) {
+            $valor_seleccionado = $this->datosRecibidos[$name];//store the selected option
+
+            if ($multiple) {
+                $arrayValoresSeleccionados = array_values($valor_seleccionado);//take the values and store them
+                $arrayEnviado = array_keys($options);
+                $resultado = array_intersect($arrayValoresSeleccionados, $arrayEnviado);
+                
+                if (count($resultado) === count($arrayValoresSeleccionados)) {
+                    $classes .= " valid-input";
+                    $mensaje_validacion = '<p class="success small">Datos validos.</p>';
+                    $isSelected = true;
+                } else {
+                    $classes .= " error-input";
+                    $mensaje_validacion = '<p class="error small">Alguno de los datos esta mal, por favor revisa los datos seleccionados.</p>';
+                    $this->errores = true;
+                }
+            } else {
+                if (in_array($valor_seleccionado, array_keys($options))) {
+                    $classes .= " valid-input";
+                    $mensaje_validacion = '<p class="success small">Datos validos.</p>';
+                    $isSelected = true;
+                } else {
+                    $classes .= " error-input";
+                    $mensaje_validacion = '<p class="error small">Alguno de los datos esta mal, por favor revisa los datos seleccionados.</p>';
+                    $this->errores = true;
+                }
+            }
+        }
+
+        $select = '<div class="grupo grupo-select">';
+        //the label
+        $select .= '<label class="label" for="' . $id . '">';
+        $select .= $label; //text for the label
+        $select .= '</label>';
+        //the select element
+        $select .= '<select ' . ($multiple ? 'multiple' : '') . ' id="' . $id . '" name="' . $name . '" class="' . $classes . '" onchange="' . $myFunction . '">';
         $select .= '<option disabled' . ($isSelected === false ? ' selected' : "") . '>-- Por favor seleccionar una opción</option>';
         foreach ($options as $key => $value) {
             if ($multiple) {
@@ -404,4 +479,6 @@ class CeinaForms {
             echo "GUARDAMEEEEE";
         }
     }
+
+    
 }

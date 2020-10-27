@@ -63,25 +63,26 @@ class DBforms {
                 ciudad,
                 pais) 
             VALUES (?, ?)");
+        if ($enviarCiudad === false) {
+            die('La función prepare() no ha funcionado' . htmlspecialchars($miConexion->error));
+        }
         
         //fct to bind the params - args: data types + the values to be put in the db record
-        $enviarCiudad->bind_param(
+        $bind_param = $enviarCiudad->bind_param(
             $datos,
             $ciudad,
             $pais
         );
-
-        // Compruebo si la conexión se establece bien
-        if (!$enviarCiudad) {
-            throw new Exception($miConexion->error_list);
+        if ($bind_param === false) {
+            // throw new Exception($miConexion->error_list);
+            die('La función bind_param() no ha funcionado' . htmlspecialchars($enviarCiudad->error));
         }
 
         // Ejecute la query
-        $enviarCiudad->execute();
-        
-        // Compruebo si se envia y no hay error
-        if (!$enviarCiudad) {
-            throw new Exception($miConexion->error_list);
+        $execute = $enviarCiudad->execute();
+        if ($execute === false) {
+            // throw new Exception($miConexion->error_list);
+            die('La función bind_param() no ha funcionado' . htmlspecialchars($enviarCiudad->error));
         }
 
         // Devuelvo el último valor añadido
@@ -881,17 +882,21 @@ class DBforms {
 
         // PREPARAR QUERY
         $prepare = $miConexion->prepare("SELECT id, nombre_vendedor, apellido_vendedor, dni FROM vendedores");
-
-        // COMPROBAR SI HAY ERROR
-        if (!$prepare) {
-            var_dump($miConexion->error_list);
+        if ($prepare === false) {
+            die('La función prepare() no ha funcionado' . htmlspecialchars($miConexion->error));
+        }
+        
+        // EJECUTAR
+        $prepare = $prepare->execute();
+        if ($prepare === false) {
+            die('La función execute() no ha funcionado' . htmlspecialchars($miConexion->error));
         }
 
-        // EJECUTAR
-        $prepare->execute();
-
         // BIND RESULT
-        $prepare->bind_result($id, $nombre, $apellidos, $dni);
+        $prepare = $prepare->bind_result($id, $nombre, $apellidos, $dni);
+        if ($prepare === false) {
+            die('La función bind() no ha funcionado' . htmlspecialchars($miConexion->error));
+        }
 
         // FETCH RESULT
         $miArray = array();
@@ -960,20 +965,20 @@ class DBforms {
 
         // BIND RESULT
         $prepare->bind_result($id, 
-                                $marca,
-                                $modelo, 
-                                $combustible, 
-                                $fecha_fabricacion, 
-                                $precio,
-                                $id_vendedor,
-                                $nombre,
-                                $apellido,
-                                $dni,
-                                $direccion,
-                                $codigo_postal,
-                                $ciudad,
-                                $pais
-                             );
+            $marca,
+            $modelo, 
+            $combustible, 
+            $fecha_fabricacion, 
+            $precio,
+            $id_vendedor,
+            $nombre,
+            $apellido,
+            $dni,
+            $direccion,
+            $codigo_postal,
+            $ciudad,
+            $pais
+        );
 
         // FETCH RESULT
         // $miArray = array();
@@ -1004,14 +1009,13 @@ class DBforms {
         $createTable .= '<th>Pais</th>';
         $createTable .= '</tr>';
 
-        foreach($fetchAllData as $customerData)
-        {
-	        $createTable .= '<tr>';
-	        $createTable .= '<td>'.$customerData['id'].'</td>';
-	        $createTable .= '<td>'.$customerData['marca'].'</td>';
-	        $createTable .= '<td>'.$customerData['modelo'].'</td>';
-	        $createTable .= '<td>'.$customerData['Combustible'].'</td>';
-	        $createTable .= '<td>'.$customerData['fecha_fabricacion'].'</td>';
+        foreach($fetchAllData as $customerData) {
+            $createTable .= '<tr>';
+            $createTable .= '<td>'.$customerData['id'].'</td>';
+            $createTable .= '<td>'.$customerData['marca'].'</td>';
+            $createTable .= '<td>'.$customerData['modelo'].'</td>';
+            $createTable .= '<td>'.$customerData['Combustible'].'</td>';
+            $createTable .= '<td>'.$customerData['fecha_fabricacion'].'</td>';
             $createTable .= '<td>'.$customerData['precio'].'</td>';
             $createTable .= '<td>'.$customerData['vendedores_id'].'</td>';
             $createTable .= '<td>'.$customerData['nombre_vendedor'].'</td>';
@@ -1021,7 +1025,7 @@ class DBforms {
             $createTable .= '<td>'.$customerData['codigo_postal'].'</td>';
             $createTable .= '<td>'.$customerData['ciudad'].'</td>';
             $createTable .= '<td>'.$customerData['pais'].'</td>';
-	        $createTable .= '</tr>';	
+            $createTable .= '</tr>';
         }
  
         $createTable .= '</table>';

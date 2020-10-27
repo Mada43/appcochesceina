@@ -1,5 +1,5 @@
 <?php
-include "./templates/header.php";
+include "./templates/header.php"; //includes also ajax-script.js 
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
 $page_title = "Añadir Modelo";
@@ -38,7 +38,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
 <div class="caja-contenedora">
     <!-- <h3 style="margin-top: 30px;">Añadir Oficina</h3> -->
     <!-- OR the title can be stored in a php var and echoed here as follows: -->	
-    <h3 style="margin-top: 55px;"><?php echo $page_title ?></h3> 
+    <h3 style="margin-top: 30px;"><?php echo $page_title ?></h3> 
     <hr> 
     
     <form
@@ -57,10 +57,9 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $placeholder = "",
             $label = "Elige una marca",
             $validacion = $existeValidacion,
-            $options = $enviarCoche->obtenerMarcas()
+            $options = $enviarCoche->obtenerMarcas(),
             //$multiple = true
         );
-        
         ?>
 
         <!-- <p>Introduce una marca nueva</p> -->
@@ -79,16 +78,37 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //     $validacion = $existeValidacion
         // );
 
+        //select input for Modelos
+        // $FormularioCeina->showInput(
+        //     $type = "select",
+        //     $id = "modelo",
+        //     $name = "modelo",
+        //     //$myFunction = "",
+        //     $placeholder = "",
+        //     $label = "Elige el modelo",
+        //     $validacion = $existeValidacion,
+        //     $options = $enviarCoche->obtenerModelos(),
+        //     //$multiple = true
+        // );  
+        ?>
+
+        <br>
+        <label for="modelos">Elige el modelo</label>
+        <select class = "input input-select" id="modelos" name="modelos">
+
+        </select>
+      
+<?
         //text input
-        $FormularioCeina->showInput(
-            $type = "text",
-            $id = "modelo",
-            $name = "modelo",
-            $myFunction = "",
-            $placeholder = "Modelo",
-            $label = "Introduzca el modelo",
-            $validacion = $existeValidacion
-        );
+        // $FormularioCeina->showInput(
+        //     $type = "text",
+        //     $id = "modelo",
+        //     $name = "modelo",
+        //     $myFunction = "",
+        //     $placeholder = "Modelo",
+        //     $label = "Introduzca el modelo",
+        //     $validacion = $existeValidacion
+        // );
 
         echo '<hr>';
         
@@ -150,8 +170,35 @@ if (!$errores && $existeValidacion){
     //   $sqlResult = $enviarOficina->enviar('ii', $idOficina, $idMedia);
     //   echo $sqlResult;
     }
-       
+    ?>
 
+    <script type="text/javascript"> 
+//     $(function(){ 
+//       $("#marca").on('change', function(){ 
+//       $.ajax({ 
+//         method: "GET", 
+        
+//         url: "getrecords_ajax.php",
+//       }).done(function( data ) { 
+//         var result= $.parseJSON(data); 
+        
+//         var string='<table width="100%"><tr> <th>#</th><th>Name</th> <th>Email</th><tr>';
+ 
+//        /* from result create a string of data and append to the div */
+      
+//         $.each( result, function( key, value ) { 
+          
+//           string += "<tr> <td>"+value['id'] + "</td><td>"+value['first_name']+' '+value['last_name']+'</td>  \
+//                     <td>'+value['email']+"</td> </tr>"; 
+//               }); 
+//              string += '</table>'; 
+//           $("#records").html(string); 
+//        }); 
+//     }); 
+// }); 
+</script> 
+       
+<?php
 include "./templates/footer.php";
 
 
@@ -167,18 +214,18 @@ LOS PAREMTROS. SELECT * FROM .....
 */
 ?>
 <script>
-    window.onload = function(){
-    document.getElementById("marca-nueva").style.display='none';
-};
-    function displayInput() {
-    var checkBox = document.getElementById("myCheck");
-    var textInput = document.getElementById("marca-nueva");
-    if (checkBox.checked == true){
-        textInput.style.display = "block";
-    } else {
-        textInput.style.display = "none";
-    }
-    }
+    // window.onload = function(){
+    // document.getElementById("marca-nueva").style.display='none';
+    // };
+    // function displayInput() {
+    // var checkBox = document.getElementById("myCheck");
+    // var textInput = document.getElementById("marca-nueva");
+    // if (checkBox.checked == true){
+    //     textInput.style.display = "block";
+    // } else {
+    //     textInput.style.display = "none";
+    // }
+    // }
 </script>
-
-<script src="./assets/js/custom.js"></script>
+<!-- <script type="text/javascript" src="modelos-coches.js"></script>
+<script src="./assets/js/custom.js"></script> -->

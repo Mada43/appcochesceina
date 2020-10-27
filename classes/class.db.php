@@ -417,12 +417,15 @@ class DBforms {
         }
 
         // Ejecute la query
-        $enviarCoche->execute();
+        if (!$enviarCoche->execute()) {
+            echo "Execute failed: (" . $enviarCoche->errno . ") " . $enviarCoche->error;
+        }
         
         // Compruebo si se envia y no hay error
         if (!$enviarCoche) {
             throw new Exception($miConexion->error_list);
         }
+
 
         // Devuelvo el último valor añadido
         $id = $enviarCoche->insert_id;
@@ -695,7 +698,7 @@ class DBforms {
         $miConexion = $this->crearConexion();
 
         // PREPARAR QUERY
-        $prepare = $miConexion->prepare("SELECT id, marca FROM marcas");
+        $prepare = $miConexion->prepare("SELECT id, marca FROM marcas ORDER BY marca");
 
         // COMPROBAR SI HAY ERROR
         if (!$prepare) {
@@ -858,8 +861,8 @@ class DBforms {
 
         //$columns = array_keys($miArray[1]);//here it is an INT, not an array!!
 
-        echo '<pre>';
-        print_r($miArray);
+        //echo '<pre>';
+        //print_r($miArray);
         //print_r($columns);
         echo '</pre>';
         // CLOSE CONNECTION
@@ -1021,9 +1024,9 @@ class DBforms {
 	        $createTable .= '</tr>';	
         }
  
-$createTable .= '</table>';
+        $createTable .= '</table>';
  
-//echo $createTable;
+        //echo $createTable;
 
         // CLOSE CONNECTION
         //$r->close();
@@ -1035,7 +1038,8 @@ $createTable .= '</table>';
     }
 
 
-    function show_data($fetchData){
+    public function show_data($fetchData)
+    {
         echo '<table border="1">
            <tr>
                <th>ID Coche</th>
@@ -1084,7 +1088,117 @@ $createTable .= '</table>';
           </tr>"; 
       }
         echo "</table>";
-   }
+    }
+
+   //get data from DB VIEW coches_vendedores
+   public function obtenerMarcasModelos($choice)
+   {
+       // ESTABLECER CONEXION
+       $miConexion = $this->crearConexion();
+
+       // PREPARAR QUERY - we select all columns from a VIEW created in the DB
+       $prepare = $miConexion->prepare(
+           "SELECT *
+           FROM marca_modelo
+           WHERE id='$choice'");
+
+       // COMPROBAR SI HAY ERROR
+       if (!$prepare) {
+           var_dump($miConexion->error_list);
+       }
+
+       // EJECUTAR
+       $prepare->execute();
+
+       // BIND RESULT
+       $prepare->bind_result($id, 
+                               $marca,
+                               $modelo
+                            );
+
+       // FETCH RESULT
+       // $miArray = array();
+       // while ($prepare->fetch()) { //fetch results from a prepared statement into the bound variables
+       //     $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+       // }
+      
+       $r = $prepare->get_result();
+       //$res = $prepare->fetch();
+       $fetchAllData = $r->fetch_all(MYSQLI_ASSOC);
+
+ 
+        //echo $createTable;
+
+        // CLOSE CONNECTION
+        //$r->close();
+        $miConexion->close();
+           //var_dump($r); object(mysqli_result)#4 (5) 
+           //{ ["current_field"]=> int(0) ["field_count"]=> int(14) ["lengths"]=> NULL ["num_rows"]=> int(4) ["type"]=> int(0) } 
+   
+        //while ($row = mysql_fetch_array($result)) {
+        //echo "<option>" . $row{'dd_val'} . "</option>";
+        return $fetchAllData;
+    }
+
+
+    //get data from DB VIEW coches_vendedores
+   public function obtenerMarcasModelos2()
+   {
+       // ESTABLECER CONEXION
+       $miConexion = $this->crearConexion();
+
+       // PREPARAR QUERY - we select all columns from a VIEW created in the DB
+       $prepare = $miConexion->prepare(
+           "SELECT *
+           FROM marca_modelo
+           ");
+
+       // COMPROBAR SI HAY ERROR
+       if (!$prepare) {
+           var_dump($miConexion->error_list);
+       }
+
+       // EJECUTAR
+       $prepare->execute();
+
+       // BIND RESULT
+       $prepare->bind_result($id_marca, 
+                               $marca,
+                               $id_modelo,
+                               $modelo
+                            );
+
+       // FETCH RESULT
+       // $miArray = array();
+       // while ($prepare->fetch()) { //fetch results from a prepared statement into the bound variables
+       //     $miArray[$id] = $nombre . " - " . $apellidos . " - DNI: " . $dni;
+       // }
+      
+       $r = $prepare->get_result();
+       //$res = $prepare->fetch();
+       $fetchAllData = $r->fetch_all(MYSQLI_ASSOC);
+
+ 
+        //echo $createTable;
+
+        // CLOSE CONNECTION
+        //$r->close();
+        $miConexion->close();
+           //var_dump($r); object(mysqli_result)#4 (5) 
+           //{ ["current_field"]=> int(0) ["field_count"]=> int(14) ["lengths"]=> NULL ["num_rows"]=> int(4) ["type"]=> int(0) } 
+   
+        //while ($row = mysql_fetch_array($result)) {
+        //echo "<option>" . $row{'dd_val'} . "</option>";
+        return $fetchAllData;
+    }
+       
+   
+
+
+}
+   
+
+
 
 
 
@@ -1159,4 +1273,4 @@ $createTable .= '</table>';
     // }
 
     
-}
+//}

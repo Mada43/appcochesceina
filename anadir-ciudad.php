@@ -23,12 +23,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else { 
         $FormularioCeina->enviarFormulario($_POST, $_FILES); }
 
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    echo '<pre>';
-    print_r($_FILES);
-    echo '</pre>';
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // echo '<pre>';
+    // print_r($_FILES);
+    // echo '</pre>';
     $FormularioCeina->enviarFormulario($_POST, $_FILES);
 }
 
@@ -38,7 +38,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
 <div class="caja-contenedora">
     <!-- <h3 style="margin-top: 30px;">Añadir Oficina</h3> -->
     <!-- OR the title can be stored in a php var and echoed here as follows: -->	
-    <h3 style="margin-top: 30px;"><?php echo $page_title ?></h3> 
+    <h3 style="margin-top: 55px;"><?php echo $page_title ?></h3> 
     <hr> 
     
     <form

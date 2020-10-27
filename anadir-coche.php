@@ -13,6 +13,62 @@ $FormularioCeina = new CeinaForms();
 //instantiating the class that manages the db
 $objectCoche = new DBforms();
 
+function printVar ($var){
+    echo '<pre>';
+    print_r($var);
+    echo '</pre>';
+    return;
+}
+
+$marcas = $objectCoche->obtenerMarcas();
+$marcas_modelos = $objectCoche -> obtenerMarcasModelos2(); //returns the result as an array of assoc subarrays
+// echo "El resultado del query para Marcas_Modelos: </br>";
+// printVar($marcas_modelos);
+
+
+// $infoMarcas = array(
+//     'mercedes' => ['mercedes-1', 'mercedes-2', 'mercedes-3'],
+//     'seat' => ['leon-1', 'leon-2', 'leon-3']
+// );
+    
+
+//define the array to associate each car make with its models 
+//bidim assoc arr: Marca = arr of models ex: [Dacia] => Array([2] => Duster [11] => Sandero)
+$infoMarcas = array(); 
+//$info_id_modelos = array();
+echo "El contenido de la var marcas: ";
+printVar($marcas);
+echo "El contenido de la var marcas_modelos: ";
+printVar($marcas_modelos);
+        
+foreach ($marcas as $key => $value) {
+    foreach($marcas_modelos as $mm){
+        if ($value == $mm['marca']) {
+            $infoMarcas[$value][$mm['id_modelo']] = $mm['modelo'];
+            $info_id_modelos[$value][] = $mm['id_modelo'];
+            //$infoMarcas[$key][] = $mm['modelo'];
+        }
+    }
+}
+
+// $arrayToEncode = array();
+// $arrayToEncode[] = $infoMarcas;
+// $arrayToEncode[] = $info_id_modelos;
+
+
+
+echo "El contenido da la var infoMarcas: </br>";
+printVar($infoMarcas);
+// echo "Var info_id_modelos: </br>";
+// printVar($info_id_modelos);
+
+// echo "Array de marcas - var infoMarcas - updated is: </br>";
+//         //var_dump($arr_marcas);
+//         printVar($infoMarcas);
+
+// echo "Var arrayToEncode: </br>";
+// printVar($arrayToEncode);
+
 // COMPRUEBO SI ESTAMOS EN METODO POST.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -35,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "POST" ? true : false;
 ?>
 <div class="caja-contenedora">
-    <h3 style="margin-top: 0px;"><?php echo $page_title ?></h3>
+    <h3 style="margin-top: 55px;"><?php echo $page_title ?></h3>
     <hr> 
     
     <form
@@ -43,9 +99,29 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         method="post" enctype="multipart/form-data"
     >
     <!-- generating the form inputs -->
-    <?php
     
-    //select input - Marca
+<!-- select input for marcas -->
+
+<?php 
+    $classes = "input input-select";
+    $mensaje_validacion = "";
+?>
+    <div class="grupo grupo-select">
+        <label class="label" for="marcas">Marca</label>
+        <select name="marcas" id="marcas" class="'$classes'">
+        <option value="" disabled selected>-- Escoge una marca</option>
+        <?php 
+        foreach ($infoMarcas as $marca => $models) : 
+        ?>
+            <option value="<?php echo $marca ?>" ><?php echo $marca ?></option>
+        <?php 
+        endforeach; 
+        ?>
+        </select>
+    </div>
+
+<?php    
+    // //select input - Marca
     // $FormularioCeina->showInput(
     //     $type = "select",
     //     $id = "marca",
@@ -53,23 +129,44 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     //     $placeholder = "",
     //     $label = "Marca",
     //     $validacion = $existeValidacion,
-    //     $options = $objectCoche->obtenerMarcas(),
+    //     $options = $marcas
+    //     //$options = $objectCoche->obtenerMarcas(),
     //     //$multiple = true
     // );
+
+    //echo "Var options for Marcas contains: </br>";
+    //printVar($options);
+    // echo "Var infoMarcas contains: </br>";
+    // printVar($infoMarcas);
+
+
+    ?>
+
+    <!-- select input for modelos -->
+    <div class="grupo grupo-select">
+        <label id="label-modelos" class="label" for="modelos" style="visibility: hidden">Modelo</label>
+        <select name="modelos" id="modelos" style="visibility: hidden">
+        <!-- <option value="" disabled selected>-- Escoge el modelo</option> -->
+        </select>
+    </div>
+
     
+    <?php
     //select input - Modelo
-    $FormularioCeina->showInput(
-        $type = "select",
-        $id = "modelo",
-        $name = "modelo",
-        //$myFunction = "",
-        $placeholder = "",
-        $label = "Modelo",
-        $validacion = $existeValidacion,
-        $options = $objectCoche->obtenerModelos(),
-        //$multiple = true
-    ); 
+    // $FormularioCeina->showInput(
+    //     $type = "select",
+    //     $id = "modelo",
+    //     $name = "modelo",
+    //     //$myFunction = "",
+    //     $placeholder = "",
+    //     $label = "Modelo",
+    //     $validacion = $existeValidacion,
+    //     $options = $objectCoche->obtenerModelos(),
+    //     //$multiple = true
+    // );
+    ?> 
     
+    <?php
     //text input -año fabricación
     $FormularioCeina->showInput(
         $type = "number",
@@ -131,29 +228,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         //$multiple = true
     //); 
 
-        //checkbox input
-        // $FormularioCeina->showInput(
-        //     $type = "checkbox",
-        //     $id = "ascensor",
-        //     $name = "ascensor",
-        //     $placeholder = "",
-        //     $label = "Tiene Ascensor",
-        //     $validacion = $existeValidacion
-        // );
-
         echo '<hr>';
-    
-        // //multiple select input for EMPLOYEES
-        // $FormularioCeina->showInput(
-        //     $type = "select",
-        //     $id = "trabajadores",
-        //     $name = "trabajadores[]",
-        //     $placeholder = "",
-        //     $label = "Trabajadores",
-        //     $validacion = $existeValidacion,
-        //     $options = $enviarOficina->obtenerTrabajadores(),
-        //     $multiple = true
-        // );
 
         //file upload input
         $FormularioCeina->showInput(
@@ -190,12 +265,8 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             //$FormularioCeina->fotoRecibida['filesize']
         );
 
-        //$ascensor = array_key_exists('ascensor', $FormularioCeina->datosRecibidos)? 1 : 0;
-        //$discap = array_key_exists('discap', $FormularioCeina->datosRecibidos)? 1 : 0;
-        // Enviar a la base de datos y guarda el id
-        //echo "Checkboxes are sent as: ";
-        //var_dump($FormularioCeina->datosRecibidos['ascensor']);
-        //var_dump($FormularioCeina->datosRecibidos['discap']);
+        printVar($_POST);
+        //printVar($_FILES);
 
         //insert data into COCHES and keep the id
         $produced = intval($FormularioCeina->datosRecibidos['anio_produccion']);
@@ -203,7 +274,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $seller = intval($FormularioCeina->datosRecibidos['vendedor']);
         //$buyer = intval($FormularioCeina->datosRecibidos['comprador']);
         $fuel = intval($FormularioCeina->datosRecibidos['combustible']);
-        $model = intval($FormularioCeina->datosRecibidos['modelo']);
+        $model = intval($FormularioCeina->datosRecibidos['modelos']);
 
         $idCoche = $objectCoche->enviarCoche(
             'iiiii',
@@ -215,33 +286,78 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $model
         );
 
-        var_dump($FormularioCeina->datosRecibidos);
-
-        //if (!empty($idOficina)) {
-        //    echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
-        //}
-
-        //get data from multiple select and 
-        // if ($FormularioCeina->datosRecibidos['trabajadores']) {
-        //     foreach ($FormularioCeina->datosRecibidos['trabajadores'] as $key => $value) {
-        //         //...pass it to the fct that inserts it into the DB
-        //         $enviarOficina->enviarOficinaTrabajador(
-        //             'ii',
-        //             $idOficina,
-        //             $value
-        //         );
-        //     }
-        // }
-
-        
+        var_dump($idCoche); 
 
       $sqlResult = $objectCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
-      echo $sqlResult;
-     // var_dump($enviarOficina);
-
-        
+      //echo $sqlResult;
+           
     }
 ?>
+
+<script id="marcas_coches" type="application/json"><?php echo json_encode($infoMarcas); ?></script>
+    <script>
+        var marcas_modelos = JSON.parse(document.getElementById("marcas_coches").innerHTML);
+
+        console.log("marcas_modelos = php array JSON parsed: ");
+        console.log(marcas_modelos);
+        console.log("typeof marcas_modelos: ");
+        console.log(typeof(marcas_modelos)); //Object
+
+        //console.log("ob keys: ");
+        //console.log (Object.keys(marcas_modelos)[0]);
+        //console.log(marcas_modelos[(Object.keys(marcas_modelos)[0])]);
+        //console.log((Object.keys(marcas_modelos[(Object.keys(marcas_modelos)[0])])));
+
+        // Object.entries(marcas_modelos.Object.keys(marcas_modelos)).forEach(element => {
+        //     console.log(marcas_modelos.Object.keys(marcas_modelos)); 
+        // });
+
+        var SELECT_MARCAS = document.getElementById("marcas");
+        var LABEL_MODELOS = document.getElementById("label-modelos");
+        var SELECT_MODELOS = document.getElementById("modelos");
+
+        SELECT_MARCAS.addEventListener('change', function() {
+            var SMval = SELECT_MARCAS.value;
+            console.log("SMval: typeof and value: ");
+            console.log(typeof(SMval)); //string ex.: Seat
+            console.log(SMval);
+            console.log("marcas_modelos[SMval]: typeof and value: ");
+            console.log(typeof(marcas_modelos[SMval]));
+            console.log(marcas_modelos[SMval]); //Object
+            console.log("marcas_modelos[SMval]: .length: ");
+            console.log(marcas_modelos[SMval].length); //undefined - because it is not an array, here we have an object
+
+            if (SMval !== '') {
+                SELECT_MODELOS.innerHTML = ''; //reset model select options
+                //make visible modelos select and its label
+                LABEL_MODELOS.style.visibility = 'visible';
+                SELECT_MODELOS.style.visibility = 'visible';
+                var obj = marcas_modelos[SMval]; //Object { 6: "Ateca", 7: "Mii", 8: "Ibiza" }
+                for (const prop in obj) {
+                    //console.log(`obj.${prop} = ${obj[prop]}`);
+                    let id = prop; //ex. : 6
+                    let modelo = obj[prop]; //ex. : Ateca
+                    var option = document.createElement('option');
+                    option.appendChild(document.createTextNode(obj[prop])); //contenido text mostrado
+                    option.value = prop; //id modelo
+                    SELECT_MODELOS.appendChild(option);
+                    }
+
+                
+                // for (let i = 0; i < marcas_modelos[SMval].length; i++) {
+                //     const el = marcas_modelos[SMval][i];
+                //     var option = document.createElement('option');
+                //     option.appendChild(document.createTextNode(marcas_modelos[SMval][i]));
+                //     //a modificar para introducir el id del modelo como option value
+                //     option.value = marcas_modelos[SMval][i];
+                //     SELECT_MODELOS.appendChild(option);                   
+                // }
+
+
+            }
+        });
+    </script>
+
 <?php include "./templates/footer.php";
 
 

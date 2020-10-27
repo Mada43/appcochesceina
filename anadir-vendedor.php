@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "POST" ? true : false;
 ?>
 <div class="caja-contenedora">
-    <h3 style="margin-top: 30px;"><?php echo $page_title ?></h3> 
+    <h3 style="margin-top: 55px;"><?php echo $page_title ?></h3> 
     <!-- OR the title can be stored in a php var and echoed here as follows: -->	
     <? //php echo $page_title ?>
     <hr> 

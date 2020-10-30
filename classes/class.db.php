@@ -887,14 +887,14 @@ class DBforms {
         }
         
         // EJECUTAR
-        $prepare = $prepare->execute();
-        if ($prepare === false) {
+        $success_prepare = $prepare->execute();
+        if ($success_prepare === false) {
             die('La función execute() no ha funcionado' . htmlspecialchars($miConexion->error));
         }
 
         // BIND RESULT
-        $prepare = $prepare->bind_result($id, $nombre, $apellidos, $dni);
-        if ($prepare === false) {
+        $Success_prepare = $prepare->bind_result($id, $nombre, $apellidos, $dni);
+        if ($Success_prepare === false) {
             die('La función bind() no ha funcionado' . htmlspecialchars($miConexion->error));
         }
 

@@ -77,10 +77,10 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
     </form>
 </div>
 <?php
-var_dump($_POST);
+//var_dump($_POST);
 if(isset($_POST["submit"])){
-    echo $_POST['ciudad'];
-    echo $_POST['pais'];   
+    echo "Los datos" . $_POST['ciudad'] ." - " . $_POST['pais'] . "han sido registrados";
+      
 }
 $errores = $FormularioCeina->hayErrores();
 if (!$errores && $existeValidacion){
@@ -99,12 +99,14 @@ if (!$errores && $existeValidacion){
         );
 
         if (!empty($idCiudad)) {
-            echo $_POST['ciudad'];
-            echo $_POST['pais'];
-            echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
+
+            echo "Los datos " . $_POST['ciudad'] ." - " . $_POST['pais'] . " han sido registrados";
+            // echo $_POST['ciudad'];
+            // echo $_POST['pais'];
+            // echo '<p>Gracias, hemos recibido y guardado sus datos</p>';
         }
 
-        var_dump($idCiudad);
+        //var_dump($idCiudad);
 
         //get data from multiple select and 
         // if ($FormularioCeina->datosRecibidos['trabajadores']) {

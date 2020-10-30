@@ -23,6 +23,14 @@ include "./templates/header.php";
     enctype="multipart/form-data"
 >
 
+<p class="saludo">Bienvenido en la APLICACIÓN DE GESTIÓN DE COCHES</p>
+<p class="info">Escoge una opción de añadir <br/>
+                                    <a href="anadir-ciudad.php">un ciudad</a><br/> 
+                                    <a href="anadir-vendedor.php">un vendedor</a></br>
+                                    <a href="anadir-modelo.php">un modelo de coche</a></br>
+                                    <a href="anadir-coche.php">un coche</a></br>
+                                    <a href="anadir-comprador.php">un comprador</a></br>
+                                    o de visualizar <a href="mostrar-coches.php">los coches</a></p>
 <?php
     // $FormularioCeina->showInput(
     //     "file", 

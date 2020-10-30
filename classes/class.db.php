@@ -490,7 +490,7 @@ class DBforms {
     public function enviarMedia(
         $datos, 
         $path, 
-        $mime_type = null, 
+        $mime_type, 
         $file_size =null 
         )
     {

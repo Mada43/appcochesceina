@@ -36,10 +36,10 @@ $marcas_modelos = $objectCoche -> obtenerMarcasModelos2(); //returns the result 
 //bidim assoc arr: Marca = arr of models ex: [Dacia] => Array([2] => Duster [11] => Sandero)
 $infoMarcas = array(); 
 //$info_id_modelos = array();
-echo "El contenido de la var marcas: ";
-printVar($marcas);
-echo "El contenido de la var marcas_modelos: ";
-printVar($marcas_modelos);
+// echo "El contenido de la var marcas: ";
+// printVar($marcas);
+// echo "El contenido de la var marcas_modelos: ";
+// printVar($marcas_modelos);
         
 foreach ($marcas as $key => $value) {
     foreach($marcas_modelos as $mm){
@@ -57,8 +57,8 @@ foreach ($marcas as $key => $value) {
 
 
 
-echo "El contenido da la var infoMarcas: </br>";
-printVar($infoMarcas);
+// echo "El contenido da la var infoMarcas: </br>";
+// printVar($infoMarcas);
 // echo "Var info_id_modelos: </br>";
 // printVar($info_id_modelos);
 
@@ -198,7 +198,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
         $name = "precio",
         $myFunction = "",
         $placeholder = "Introduzca el precio",
-        $label = "Precio",
+        $label = "Precio (€)",
         $validacion = $existeValidacion
     );
 
@@ -265,7 +265,7 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             //$FormularioCeina->fotoRecibida['filesize']
         );
 
-        printVar($_POST);
+        //printVar($_POST);
         //printVar($_FILES);
 
         //insert data into COCHES and keep the id
@@ -286,7 +286,12 @@ $existeValidacion = !empty($FormularioCeina) && $_SERVER["REQUEST_METHOD"] === "
             $model
         );
 
-        var_dump($idCoche); 
+        //var_dump($idCoche); 
+        if ($idCoche) {
+            echo "Gracias, hemos recibido los datos!";
+        }else{
+            "En error ocurred when trying to process the data...";
+        }
 
       $sqlResult = $objectCoche->enviarCochesMedia('ii', $idCoche, $idMedia);
       //echo $sqlResult;

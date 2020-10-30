@@ -2,7 +2,7 @@
 include "./templates/header.php";
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
-$page_title = "Mostrar coches";
+$page_title = "Vista coches";
 ?>
 <?php
 //creating the necessary objects

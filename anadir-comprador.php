@@ -1,9 +1,8 @@
 <?php
-$page_title = "Añadir Comprador";
-
 include "./templates/header.php";
 include "./classes/class.forms.php";
 include "./classes/class.db.php";
+$page_title = "Añadir Comprador";
 
 //these lines, until the form, could be put in the header so that they are included in every page
 //creating the necessary objects
@@ -23,12 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else { 
         $FormularioCeina->enviarFormulario($_POST, $_FILES); }
 
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    echo '<pre>';
-    print_r($_FILES);
-    echo '</pre>';
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // echo '<pre>';
+    // print_r($_FILES);
+    // echo '</pre>';
     //$FormularioCeina->enviarFormulario($_POST, $_FILES);
 }
 

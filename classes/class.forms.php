@@ -11,7 +11,7 @@ class CeinaForms {
 
     public $fichero_subido;
 
-    public $array_mime_types;
+    public $array_mime_types; //mime types permitidas
     public $array_extensiones_permitidas;
 
     public function __construct()
@@ -468,15 +468,15 @@ class CeinaForms {
     private function escanearDirectorio($nombreArchivo)
     {
         $ficherosDirectorio = scandir($this->dir_subida);
-        echo '<pre>';
-        print_r($ficherosDirectorio);
-        print_r($nombreArchivo);
-        echo '</pre>';
+        //echo '<pre>';
+        //print_r($ficherosDirectorio);
+        //print_r($nombreArchivo);
+        //echo '</pre>';
 
         if (in_array($nombreArchivo, $ficherosDirectorio)) {
-            echo "ESTOY EN EL DIRECTORIO NO ME GUARDES";
+            echo "El archivo existe en el directorio";
         } else {
-            echo "GUARDAMEEEEE";
+            echo "El foto ha sido guardada";
         }
     }
 
